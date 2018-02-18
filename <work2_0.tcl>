@@ -15,59 +15,28 @@ proc finish {} {
 }
 set s1 [$ns node]
 set s2 [$ns node]
-set s3 [$ns node]
 
 set r1 [$ns node]
 set r2 [$ns node]
-set r3 [$ns node]
-set r4 [$ns node]
-set r5 [$ns node]
 
-set k1 [$ns node]
-set k2 [$ns node]
-set k3 [$ns node]
 
-$ns duplex-link $r1 $r2 128kb 10ms DropTail
+$ns duplex-link $r1 $r2 128kb 100ms DropTail
 $ns duplex-link-op $r1 $r2 orient right
 
-$ns duplex-link $s1 $r1 128kb 10ms DropTail
-$ns duplex-link-op $s1 $r1 orient right
+$ns duplex-link $s1 $r1 128kb 100ms DropTail
+$ns duplex-link-op $s1 $r1 orient right-down
 
-$ns duplex-link $r1 $s2 128kb 10ms DropTail
-$ns duplex-link-op $r1 $s2 orient up
-
-$ns duplex-link $r1 $s3 128kb 10ms DropTail
-$ns duplex-link-op $r1 $s3 orient down
-
-$ns duplex-link $r2 $r3 128kb 10ms DropTail
-$ns duplex-link-op $r2 $r3 orient right-up
-
-$ns duplex-link $r2 $r5 128kb 10ms DropTail
-$ns duplex-link-op $r2 $r5 orient right-down
-
-$ns duplex-link $r3 $k1 128kb 10ms DropTail
-$ns duplex-link-op $r3 $k1 orient right-up
-
-$ns duplex-link $r3 $r4 128kb 10ms DropTail
-$ns duplex-link-op $r3 $r4 orient right
-
-$ns duplex-link $r4 $k2 128kb 10ms DropTail
-$ns duplex-link-op $r4 $k2 orient right
-
-$ns duplex-link $r5 $k3 128kb 10ms DropTail
-$ns duplex-link-op $r5 $k3 orient right
-
-$ns duplex-link $r4 $k3 128kb 10ms DropTail
-$ns duplex-link-op $r4 $k3 orient down
+$ns duplex-link $s2 $r1 128kb 100ms DropTail
+$ns duplex-link-op $s2 $r1 orient right-up
 
 $ns queue-limit $r1 $r2 10
 $ns duplex-link-op $r1 $r2 queuePos 0.5
 
 set snk1 [new Agent/TCPSink]
-$ns attach-agent $k1 $snk1
+$ns attach-agent $r2 $snk1
 
 set snk2 [new Agent/TCPSink]
-$ns attach-agent $k2 $snk2
+$ns attach-agent $r2 $snk2
 
 set tcp1 [new Agent/TCP]
 $tcp1 set maxcwnd_ 50
@@ -84,12 +53,12 @@ $ns attach-agent $s2 $tcp2
 $ns connect $tcp2 $snk2
 $tcp2 set fid_ 2
 set tlnl [$tcp2 attach-source Telnet]
-$tlnl set interval_ 0.02s
+$tlnl set interval_ 0.03s
 
-$ns at 0.1 "$ftp1 produce 100"
-$ns at 0.2 "$tlnl start"
-$ns at 2.0 "$tlnl stop"
-$ns at 8.0 "finish"
+$ns at 0.1 "$ftp1 produce 175"
+$ns at 0.5 "$tlnl start"
+$ns at 1.5 "$tlnl stop"
+$ns at 6.0 "finish"
 
 $ns run
 
